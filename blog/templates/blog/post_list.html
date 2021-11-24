@@ -1,15 +1,30 @@
 {% extends 'blog/base.html' %}
-
 {% block content %}
-    {% for post in posts %}
-        <article class="post">
-            <time class="date">
-                {{ post.published_date }}
-            </time>
-            <h2><a 
-                href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}
-            </a></h2>
-            <p>{{ post.text|linebreaksbr }}</p>
-        </article>
-    {% endfor %}
+{% for post in posts %}
+<article class="post">
+  <time class="date"> {{post.published_date}} </time>
+  <h2><a href="{% url 'post_detail' pk=post.pk %}">{{post.title}} </a></h2>
+  <p>
+    <span id="shortText{{ forloop.counter }}" style="display: inline;">{{post.text|truncatewords:50}}</span>
+    <span id="fullText{{ forloop.counter }}" style="display: none;">{{post.text|linebreaksbr}}</span>
+    <button onclick="toggleText({{ forloop.counter }})" id="textButton{{ forloop.counter }}">See More</button>
+  </p>
+</article>
+{% endfor %}
+<script>
+    function toggleText(index) {
+      var showFullText = document.getElementById("fullText" + index);
+      var showShortText = document.getElementById("shortText" + index);
+      var buttonText = document.getElementById("textButton" + index);
+      if (showFullText.style.display === "none") {
+        showFullText.style.display = "inline";
+        showShortText.style.display = "none";
+        buttonText.innerHTML = "Show More";
+      } else {
+        showFullText.style.display = "none";
+        showShortText.style.display = "inline";
+        buttonText.innerHTML = "Show Less";
+      }
+    }
+</script>
 {% endblock %}
